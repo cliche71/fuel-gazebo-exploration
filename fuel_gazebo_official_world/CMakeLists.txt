@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.0.2)
+project(fuel_gazebo_official_world)
+find_package(catkin REQUIRED)
+catkin_package()
+catkin_install_python(PROGRAMS scripts/check_scene.py scripts/spawn_office.py scripts/collect_inputs.py DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+install(DIRECTORY launch models resource worlds DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+install(FILES manifest.json README.md OFFICIAL_BEHAVIOR.md VERIFICATION.txt LICENSE DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})

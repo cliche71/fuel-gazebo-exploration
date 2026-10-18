@@ -1,0 +1,77 @@
+{
+  "result": "OFFICIAL CAMERA START GEOMETRY CHECK PASSED",
+  "source": "Actual raycast.cpp and astar2.cpp compiled. Original SDF inputPointCloud, setCacheOccupancy, occupancy accessors and local inflation extracted unchanged; ROS/PCL adapters and sparse buffers replace runtime dependencies.",
+  "cases": [
+    {
+      "scenario": "current_vi_stationary",
+      "frames": 1,
+      "start_occupancy": 0,
+      "clear_edges": 0,
+      "unknown_edges": 26,
+      "inflated_edges": 0,
+      "outside_edges": 0,
+      "astar_status": 2,
+      "visited_nodes": 1,
+      "path_points": 0,
+      "path_length_m": 0.0,
+      "checked_route_safe": 0
+    },
+    {
+      "scenario": "offset_control_official_fov",
+      "frames": 1,
+      "start_occupancy": 0,
+      "clear_edges": 0,
+      "unknown_edges": 26,
+      "inflated_edges": 0,
+      "outside_edges": 0,
+      "astar_status": 2,
+      "visited_nodes": 1,
+      "path_points": 0,
+      "path_length_m": 0.0,
+      "checked_route_safe": 0
+    },
+    {
+      "scenario": "official_aligned_stationary",
+      "frames": 1,
+      "start_occupancy": 0,
+      "clear_edges": 9,
+      "unknown_edges": 17,
+      "inflated_edges": 0,
+      "outside_edges": 0,
+      "astar_status": 1,
+      "visited_nodes": 28,
+      "path_points": 5,
+      "path_length_m": 0.8,
+      "checked_route_safe": 1
+    },
+    {
+      "scenario": "official_aligned_up_down",
+      "frames": 31,
+      "start_occupancy": 1,
+      "clear_edges": 10,
+      "unknown_edges": 16,
+      "inflated_edges": 0,
+      "outside_edges": 0,
+      "astar_status": 1,
+      "visited_nodes": 29,
+      "path_points": 5,
+      "path_length_m": 0.8,
+      "checked_route_safe": 1
+    },
+    {
+      "scenario": "current_vi_up_down",
+      "frames": 31,
+      "start_occupancy": 0,
+      "clear_edges": 0,
+      "unknown_edges": 26,
+      "inflated_edges": 0,
+      "outside_edges": 0,
+      "astar_status": 2,
+      "visited_nodes": 1,
+      "path_points": 0,
+      "path_length_m": 0.0,
+      "checked_route_safe": 0
+    }
+  ],
+  "limitation": "No ROS/Gazebo execution. Ideal noiseless depth from 147 scene boxes and ground only; vehicle dynamics, self-occlusion and sensor timing not simulated. Startup sweep assumes actual positions 1 -> 2 -> 1 m. Route checks follow original Astar first-edge sampling from 0.1 m, and use 0.02 m samples thereafter; UNKNOWN starting cell is not independently disallowed."
+}

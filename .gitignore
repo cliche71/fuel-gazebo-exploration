@@ -1,0 +1,28 @@
+# Catkin output and local recovery data
+build/
+devel/
+install/
+logs/
+log/
+source_backups/
+fuel_gazebo_backups/
+fuel_official_ws/
+rotors_ws/
+*.bag
+*.bag.active
+*.mp4
+*.mkv
+
+# Python / editors / credentials
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
+*~
+
+# Preserve fixed upstream inputs. Do not ignore all archives or point clouds.
+!fuel_gazebo_official_baseline/vendor/FUEL-662dd23.tar.gz

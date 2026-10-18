@@ -1,0 +1,59 @@
+{
+  "checks_passed": 26,
+  "checks": [
+    "captured source SHA",
+    "every protected URDF element preserved",
+    "all inertial elements unchanged",
+    "all collision elements unchanged",
+    "all visual elements unchanged",
+    "all model physics plugins unchanged",
+    "original joints unchanged",
+    "new optical link has zero physics or visual content",
+    "rendered camera center is measured odometry origin",
+    "rendering +X points body forward and level",
+    "optical TF agrees with official CPU camera rotation",
+    "optical TF origin agrees with rendered camera",
+    "image header optical frame matches URDF",
+    "focal length from actual image width and FOV",
+    "adapter is idempotent",
+    "changed physical mass rejected",
+    "changed motor constant rejected",
+    "Python 3.8 syntax",
+    "hummingbird mesh fully behind clip for all rotor angles",
+    "vi_sensor mesh fully behind clip for all rotor angles",
+    "propeller_cw mesh fully behind clip for all rotor angles",
+    "propeller_ccw mesh fully behind clip for all rotor angles",
+    "RotorS exact ODE physics preserved",
+    "RotorS ROS interface world plugin present",
+    "only ground and office models, no test box",
+    "simulation includes no planner/bridge node"
+  ],
+  "camera_report": {
+    "body_to_original_sensor_translation": [
+      0.11557397968737478,
+      0.055,
+      -0.025029974175395254
+    ],
+    "sensor_relative_pose": [
+      -0.11749541902720743,
+      -0.055,
+      0.01336678329365796,
+      0.0,
+      -0.09999999999999999,
+      0.0
+    ],
+    "body_to_new_optical_translation": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "render_tf_max_error": 1.3877787807814457e-17
+  },
+  "maximum_forward_visual_extent_m": {
+    "hummingbird": 0.194948,
+    "vi_sensor": 0.16989108077723508,
+    "propeller_cw": 0.2702091996370892,
+    "propeller_ccw": 0.27038301763337114
+  },
+  "runtime_gazebo_test": false
+}

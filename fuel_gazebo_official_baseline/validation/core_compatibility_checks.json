@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "official_commit": "662dd23c7b52b258d3c4a0155ff6632118e8984f",
+  "source_files_verified": 1527,
+  "preparation": {
+    "passed": true,
+    "checks": [
+      "Bundled fixed archive SHA verification plus exact 1527-file list and per-file SHA-256/Git blob verification",
+      "Fixed Git archive fallback despite deliberately contaminated working tree",
+      "Repeated verify-only makes no changes",
+      "Edited prepared source rejected without overwriting",
+      "Unrecognized nonempty directory rejected without overwriting",
+      "Existing fuel_ws, rotors_ws, and their subdirectories rejected"
+    ]
+  },
+  "construction": {
+    "passed": true,
+    "checks": 13,
+    "executed": "Actual selected planner_manager.cpp methods, PolynomialTraj, NonUniformBspline",
+    "substituted": "Optimizer only for these construction checks",
+    "coverage": [
+      "two-point route",
+      "three-point route",
+      "moving initial velocity",
+      "repeated points",
+      "empty path",
+      "all-identical path",
+      "nonfinite path",
+      "invalid speed",
+      "nonfinite initial velocity",
+      "first yaw waypoint with zero displacement"
+    ]
+  },
+  "actual_optimization": {
+    "passed": true,
+    "nlopt_version": "2.7.1",
+    "nlopt_commit": "09b3c2a6da71cabcb98d2c8facc6b83d2321ed71",
+    "waypoint_routes": {
+      "metrics": {
+        "ACTUAL_NLOPT_CASES": 48.0,
+        "max_start_error": 0.0138773,
+        "max_end_error": 2.1137,
+        "max_yaw_start_error": 0.00390611,
+        "max_yaw_end_error": 1.25833,
+        "max_speed": 0.824226,
+        "max_acceleration": 1.05013,
+        "max_yaw_rate": 1.40755
+      },
+      "solver_warning_count": 0
+    },
+    "kinodynamic_routes": {
+      "metrics": {
+        "ACTUAL_KINO_CASES": 16.0,
+        "max_start_error": 0.00130603,
+        "max_yaw_start_error": 0.00389274,
+        "max_speed": 0.941152,
+        "max_acceleration": 0.885376,
+        "max_yaw_rate": 1.4094
+      },
+      "solver_warning_count": 0
+    },
+    "executed": "Actual selected planner_manager.cpp functions, actual kinodynamic_astar.cpp search and sampling, actual bspline_optimizer.cpp objective/solver wrapper, actual PolynomialTraj/NonUniformBspline, actual NLopt shared library",
+    "substituted": "ROS parameter/time calls and analytic EDT queries; these checks do not execute ROS or Gazebo",
+    "parameters": "planner.yaml weights, algorithms 15/11, 5 ms solver limit, max_vel/max_acc 0.6",
+    "waypoint_cases": "6 routes x 2 initial velocities x 4 yaw targets = 48; free map and one sphere-distance case",
+    "kinodynamic_cases": "4 goals x 4 yaw targets = 16, free known map",
+    "endpoint_scope": "The official optimizer uses soft terminal costs. Max terminal position/yaw errors are recorded, not constrained to zero. No fixed boundary or stop-step policy was introduced.",
+    "warning_scope": "No solver warnings in this final 64-case run. This does not guarantee the solver never warns in other scenes or conditions. Before the confirmed derivative correction, the same 48/16 suites recorded 3/2 warnings while still retaining finite best results."
+  },
+  "time_derivative": {
+    "passed": true,
+    "unchanged_objective": "cost=||B/dt^2-a||^2",
+    "official_formula": "-r.dot(B)/dt^3",
+    "corrected_formula": "-4*r.dot(B)/dt^3",
+    "dt": 0.5,
+    "central_difference_step": 1e-06,
+    "start": {
+      "official": -1.7852,
+      "numerical": -2.7668,
+      "corrected": -2.7668,
+      "absolute_error_before": 0.9816,
+      "absolute_error_after": 1.92868e-12
+    },
+    "end": {
+      "official": -2.058,
+      "numerical": -3.018,
+      "corrected": -3.018,
+      "absolute_error_before": 0.96,
+      "absolute_error_after": 7.67928e-11
+    }
+  },
+  "depth_projection": {
+    "passed": true,
+    "executed": "Actual patched MapROS::proessDepthImage body with minimal image/point containers and Eigen transform",
+    "checks": [
+      "Current zero pixel is replaced by max range even when the next pixel is valid",
+      "Valid depth remains current-pixel depth",
+      "The last row sample does not dereference an advanced pointer"
+    ],
+    "sanitizers": "AddressSanitizer and UndefinedBehaviorSanitizer; leak scanning disabled because the container does not support LeakSanitizer ptrace inspection"
+  },
+  "unverified": [
+    "Full ROS/Catkin build",
+    "Gazebo camera/dynamics performance",
+    "Actual autonomous exploration and completion"
+  ]
+}

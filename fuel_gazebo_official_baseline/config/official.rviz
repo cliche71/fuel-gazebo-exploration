@@ -1,0 +1,102 @@
+Panels:
+- Class: rviz/Displays
+  Name: Displays
+Visualization Manager:
+  Class: ''
+  Global Options:
+    Background Color: 35; 39; 46
+    Fixed Frame: world
+    Frame Rate: 20
+  Displays:
+  - Class: rviz/Grid
+    Name: Ground reference
+    Enabled: true
+    Cell Size: 1
+    Plane Cell Count: 20
+    Color: 100; 110; 120
+    Alpha: 0.5
+    Reference Frame: world
+    Value: true
+  - Class: rviz/PointCloud2
+    Name: Observed obstacles - orange
+    Enabled: true
+    Topic: /fuel_official/map/occupancy_all
+    Queue Size: 2
+    Style: Boxes
+    Size (m): 0.1
+    Size (Pixels): 3
+    Alpha: 1
+    Color Transformer: FlatColor
+    Color: 245; 160; 75
+    Position Transformer: XYZ
+    Decay Time: 0
+    Use Fixed Frame: true
+    Value: true
+  - Class: rviz/PointCloud2
+    Name: Inflated obstacles - optional
+    Enabled: false
+    Topic: /fuel_official/map/occupancy_inflate
+    Queue Size: 2
+    Style: Boxes
+    Size (m): 0.1
+    Alpha: 0.25
+    Color Transformer: FlatColor
+    Color: 250; 90; 60
+    Position Transformer: XYZ
+    Decay Time: 0
+    Use Fixed Frame: true
+    Value: false
+  - Class: rviz/Pose
+    Name: Measured camera pose
+    Enabled: true
+    Topic: /fuel_official/sensor_pose
+    Shape: Axes
+    Axes Length: 0.4
+    Axes Radius: 0.02
+    Value: true
+  - Class: rviz/Marker
+    Name: FUEL frontier clusters
+    Enabled: true
+    Marker Topic: /fuel_official/planning_vis/frontier
+    Queue Size: 1000
+    Value: true
+  - Class: rviz/Marker
+    Name: Representative viewpoints and viewing directions
+    Enabled: true
+    Marker Topic: /fuel_official/planning_vis/viewpoints
+    Queue Size: 100
+    Value: true
+  - Class: rviz/Path
+    Name: Actual measured flight - cyan
+    Enabled: true
+    Topic: /fuel_official/actual_path
+    Queue Size: 2
+    Color: 40; 220; 240
+    Line Style: Lines
+    Line Width: 0.035
+    Buffer Length: 1
+    Value: true
+  - Class: rviz/Marker
+    Name: FUEL selected route and trajectory
+    Enabled: true
+    Marker Topic: /fuel_official/planning_vis/trajectory
+    Queue Size: 100
+    Value: true
+  Tools:
+  - Class: rviz/Interact
+  - Class: rviz/MoveCamera
+  - Class: rviz/Select
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 11
+      Focal Point:
+        X: 2
+        Y: 0
+        Z: 1.0
+      Pitch: 0.6
+      Yaw: 0.8
+      Target Frame: world
+Window Geometry:
+  Width: 1200
+  Height: 800

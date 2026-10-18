@@ -1,0 +1,5 @@
+PASS: 5 measured input checks.
+PASS: 17 command bridge checks.
+PASS: actual diagnostic helper compiled with Eigen and ROS/message stubs.
+The helper permits an UNKNOWN start cell when original first-edge tests pass; it refuses 26 blocked edges or no frontiers.
+No ROS/Gazebo execution.

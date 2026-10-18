@@ -1,0 +1,45 @@
+fuel_gazebo_official_world 0.1.0
+Verified: 2026-10-18
+
+Scope: official office scene conversion and scene-loading helper.
+No FUEL source modifications, flight commands, automatic exploration triggers,
+free-space injection, synthetic camera poses, or initialization movement.
+
+Source repository:
+https://github.com/HKUST-Aerial-Robotics/FUEL
+Commit: 662dd23c7b52b258d3c4a0155ff6632118e8984f
+Original resource/office.pcd is byte-identical to the official source.
+SHA256: f81065db52a6d83ae6d9bb357f321e45327f59eb7105cd005d18e8a1ba3f2336
+
+PASS: 207840 original points, 202920 occupied 0.1 m cells, 147 merged boxes.
+PASS: Each source point belongs to its occupied cell and generated solid.
+PASS: Boxes partition all occupied cells exactly; no omitted, added or
+      double-covered cells after merging.
+PASS: Matching visual and collision dimensions, zero world transform.
+PASS: Vertical (0,0,1) -> (0,0,2) segment: wall clearance 2.15 m,
+      ground clearance 1 m; both exceed 0.35 m test margin.
+PASS: All package XML parses and all Python scripts compile.
+PASS: Scripts expose --help without requiring an active ROS session.
+PASS: Fake-service scene-loader cases:
+      1. New scene confirmed before deleting the old test box.
+      2. Existing matching office is not spawned again.
+      3. Running exploration/navigation refuses installation.
+      4. Unexpected world models refuse installation.
+      5. Mismatching existing office is neither replaced nor deleted.
+      6. Invalid newly spawned office rolls back, old box remains.
+      7. Old-box deletion failure rolls back only the new office.
+      8. Planner starting during installation causes rollback.
+      9. A moving drone refuses installation.
+
+Fidelity limit: point-cloud samples are not solid geometry. Grid conversion
+changes very small gaps and adds thickness. Exact-cell equivalence refers
+to the chosen 0.1 m grid, not exact equivalence to the original renderer.
+A common-thickness 1 cm planar comparison found no new separation of the
+initially reachable effective region for radii 0.1, 0.175 and 0.35 m.
+That comparison assumes source points represent 0.1 m squares and is
+not an equivalence proof for the official camera-dependent renderer.
+
+NOT RUN HERE: ROS Noetic/catkin compilation, Gazebo model spawn, actual
+camera rendering, physical collision, official initialization or flight.
+No ROS/Gazebo installation is available in this verification environment.
+Changing scene alone is not a demonstrated fix for the camera-offset gap.

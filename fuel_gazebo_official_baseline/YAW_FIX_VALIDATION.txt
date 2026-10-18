@@ -1,0 +1,51 @@
+FUEL Gazebo baseline 0.1.3 — offline validation, 2026-10-18
+
+Observed user-side failure
+The supplied flight report records the first halt at simulation time 80.69,
+trajectory 26: "FUEL command exceeds the command yaw rate limit". The incoming
+packet age was zero. Later planner activity does not show that the latched
+command adapter resumed. This update addresses yaw generation, not TF warnings.
+
+Actual C++ / NLopt execution
+The actual FUEL position/yaw construction functions, polynomial and B-spline
+code, and optimizer were compiled with Eigen and NLopt 2.7.1. ROS parameter/time
+and map-distance access were substituted for this isolated test. These runs are
+not a complete ROS build or a Gazebo flight.
+
+The original baseline produced a peak yaw rate of 4.413328 rad/s in a sequence
+starting from rest, exceeding the adapter's unchanged 3 rad/s threshold.
+
+With the shipped exploration parameters (rate 1.0471975333 rad/s, acceleration
+1.5707963 rad/s^2), all 36 successive replans completed and passed independent
+continuous-span derivative checks. Seven additional static cases passed and
+nine out-of-limit or unsuccessful static candidates were rejected.
+With rate 3 rad/s and acceleration 12 rad/s^2, all 36 successive replans and
+14 additional static cases passed; two invalid candidates were rejected.
+
+For accepted results: whole-span derivative limits hold within 1e-7 numerical
+tolerance; initial heading/rate/acceleration errors are <= 1e-3; position control
+points and knots remain unchanged; position/yaw duration differences are < 1e-12.
+Two ordinary baseline control vectors passed through exactly unchanged.
+The endpoint heading remains a soft objective and can have residual error.
+
+Solver-specific checks
+400 randomized constraint-gradient and interior-extremum cases passed.
+Maximum finite-difference gradient discrepancy: 5.02041e-8.
+Maximum dense-sampling extremum discrepancy: 1.0225e-7.
+30 refinement cases passed; peak values respected the configured limits.
+Invalid initial-state rejection leaves input control points unchanged.
+Only independently checked feasible iterates may be accepted after an early
+optimizer stop. Unverified or infeasible low-cost iterates are never accepted.
+
+Python and delivery checks
+17 existing command-bridge tests and 13 timestamp regression tests passed.
+18 installer tests passed, covering source hashes, workspace version, backups,
+repeat installation, source-record verification and injected-failure rollback.
+A fresh pinned official source preparation verified 1,527 files and applied
+four patch sets. Its seven changed source files match the incremental payload.
+
+Limits
+No actual ROS/catkin build, Gazebo physics, camera delivery, controller response,
+120-second flight or complete office exploration was validated in this container.
+The package's YAW_FIX.md gives the required user-side build and flight steps.
+RViz empty-marker and repeated rotor-TF warnings are outside this update.

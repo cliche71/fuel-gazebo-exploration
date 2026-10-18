@@ -1,0 +1,12 @@
+{
+  "archive": "FUEL-662dd23.tar.gz",
+  "sha256": "9e0115042c0cb6976ceef794ef79118f46872645e4e8928f2452add7c2efd86a",
+  "commit": "662dd23c7b52b258d3c4a0155ff6632118e8984f",
+  "archive_paths": [
+    "fuel_planner",
+    "uav_simulator",
+    "LICENSE",
+    "README.md",
+    ".gitignore"
+  ]
+}

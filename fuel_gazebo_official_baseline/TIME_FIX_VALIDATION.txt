@@ -1,0 +1,14 @@
+FUEL Gazebo command-time fix 0.1.2 — offline validation
+
+Actual received stop log: sim 7144.01, PositionCommand timestamp is stale or in the future.
+The previous flight report ended about 55 milliseconds before the stop. The old log cannot identify whether the rejected packet was old or ahead of the local clock.
+
+PASS: 17 original control/frame/preparation tests using shipped callbacks.
+PASS: 13 independent timestamp regression tests using shipped callbacks.
+PASS: 16 incremental installer checks, including backup, no edits to protected workspaces, idempotence, checksum validation, running-bridge refusal, and rollback after injected write failure.
+PASS: fresh isolated workspace preparation; 1527 original committed source files verified before applying the same three documented patch sets.
+PASS: changed Python syntax and package XML.
+
+The timing regression includes 1000 commands at 100 Hz with local clock snapshots at 10 Hz and old packets mixed into the stream. Commands keep their original stamp and receipt time; future samples are not executed early. The original 0.3 simulation-second validity and 1 wall-second watchdog are unchanged.
+
+No ROS network transport, Gazebo dynamics, actual controller response or long-running exploration was tested in this environment. User-side 120-second flight recording remains necessary. No upstream FUEL algorithm, camera configuration, map or yaw limit was changed by this update.
