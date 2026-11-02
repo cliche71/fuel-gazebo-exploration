@@ -1,94 +1,163 @@
 # FUEL Gazebo Exploration
 
-基于官方 FUEL 的 Gazebo Classic / RotorS Hummingbird 自主探索适配与运行说明。
-当前交付版本：**0.1.3**；说明更新日期：**2026-10-18**。
+在 **ROS Noetic、Gazebo Classic 和 RotorS Hummingbird** 中运行 FUEL 无人机自主探索。
 
-公开仓库：[cliche71/fuel-gazebo-exploration](https://github.com/cliche71/fuel-gazebo-exploration)。
+本项目基于 [HKUST FUEL](https://github.com/HKUST-Aerial-Robotics/FUEL)，提供办公室仿真场景、深度相机、飞行器模型与控制接口。无人机通过相机观测逐步建图，由 FUEL 选择探索目标并规划轨迹，再由 RotorS 控制器和飞行器动力学执行。
 
-## 当前已经做到什么
+[安装与构建](#安装与构建) · [运行探索](#运行探索) · [配置](#主要配置) · [测试结果](#测试结果) · [文档](#文档)
 
-用户在 Ubuntu 20.04、ROS Noetic、Gazebo 11.15.1 上完成了实际编译与 Gazebo 仿真飞行检查；这不是实体无人机飞行测试：
+## 功能
 
-| 项目 | 2026-10-18 实测结果 |
+- Gazebo 办公室场景与 RotorS Hummingbird 飞行仿真。
+- 深度图、相机标定和里程计接入，使用在线地图进行前沿探索。
+- 轨迹命令转换、独立起飞准备和连续重新规划。
+- 连续转向修正、失败候选状态恢复，以及执行前轨迹检查和限期截停。
+- 构建与运行脚本，包含模型、相机、规划器及运行日志配置。
+
+Gazebo 保存场景的物理几何；规划器的地图由传感器观测逐步建立。飞行器经过动力学和控制器跟随轨迹，实际运动会影响后续观测与规划。
+
+## 安装与构建
+
+### 环境要求
+
+| 项目 | 使用环境 |
 | --- | --- |
-| 连续检查时间 | 120 秒 |
-| 检查结果 | PASSED |
-| 记录到的不同路线编号 | 171 个，编号 3–173 |
-| 相对记录起点的最大直线位移 | 14.8593 米，不是累计航程 |
-| 检查结束时的状态 | 正在飞行，EXEC_TRAJ / RUNNING |
-| 首次异常停止记录 | 无，first_stop 为 null |
+| 系统 | Ubuntu 20.04 |
+| ROS | ROS Noetic、catkin |
+| 仿真 | Gazebo Classic 11.15.1、RotorS、mav_comm |
+| Python | Python 3.8、rospy、PyYAML、NumPy |
+| 主要开发依赖 | Eigen3、PCL、OpenCV、Boost、NLopt C++ 接口，以及 ROS / Gazebo 开发库 |
 
-这证明本次记录中的持续自主探索已跑通。完整办公室覆盖、最终 FINISH 和多次重复运行尚待单独记录。
-指标来源见 [验证记录](docs/VALIDATION.md) 和 [结果摘要](validation/2026-10-18-flight-summary.json)。
-
-本仓库保存与该次运行对应的 **0.1.3 交付代码、补丁和说明**，不声称已经逐文件取得用户电脑上的最终源码。
-电脑上的成功版本另有完整源码备份，见 [备份与恢复](docs/OPERATIONS.md#备份与恢复)。
-
-## 从哪里开始
-
-- 已有成功环境，日常启动：读 [使用说明](docs/OPERATIONS.md#日常启动顺序)。
-- 新建独立 FUEL 工作区：读 [首次准备](docs/OPERATIONS.md#首次准备独立工作区)。
-- 了解与官方的差别：读 [改动范围](docs/OPERATIONS.md#与官方版本的差别) 和 [完整源码改动记录](fuel_gazebo_official_baseline/CHANGES.md)。
-- GitHub 建仓与日常保存：读 [仓库管理说明](docs/GITHUB.md)。
-- 检查仓库文件：执行 `python3 tools/verify_repository.py`，此项不运行 ROS 或 Gazebo。
-
-**启动顺序必须是：Gazebo → 确认约 1 米稳定悬停 → FUEL → prepare → ready 检查 → start。**
-如果在无人机仍靠近地面时启动 FUEL，当前程序可能持续保持低处的位置。恢复方法见使用说明。
-
-## 环境与首次准备
-
-本仓库面向已经装好并编译成功的 ROS Noetic、RotorS 和 FUEL 依赖环境；它不是操作系统或完整依赖镜像。
-已验证的 RotorS 工作区为 `~/rotors_ws`，独立 FUEL 工作区为 `~/fuel_official_ws`。
-
-在仓库根目录执行：
+先按 [依赖说明](docs/DEPENDENCIES.md)准备 RotorS、mav_comm 和其他开发依赖。默认 RotorS 工作区为 `~/rotors_ws`。使用其他位置时，在构建和运行终端中一致设置：
 
 ```bash
-python3 fuel_gazebo_official_baseline/scripts/prepare_workspace.py
+export ROTORS_WS=/path/to/rotors_ws
 ```
 
-然后在安装了 ROS 的电脑上编译：
+获取仓库并构建：
 
 ```bash
-source /opt/ros/noetic/setup.bash
-source ~/rotors_ws/devel/setup.bash
-cd ~/fuel_official_ws
-catkin_make -DPYTHON_EXECUTABLE=/usr/bin/python3 -j2 -l2
-source ~/fuel_official_ws/devel/setup.bash
-rosrun fuel_gazebo_official_baseline make_official_robot.py
+git clone https://github.com/cliche71/fuel-gazebo-exploration.git ~/fuel_gazebo_ws
+cd ~/fuel_gazebo_ws
+./tools/build.sh
 ```
 
-已有工作区时，准备程序会检查而不是覆盖不匹配的文件。已成功运行的电脑无需为了建立仓库重新执行准备或覆盖工作区。
+仓库包含 FUEL 运行源码、适配包、相机插件和场景资源。构建产物位于本目录的 `build/` 和 `devel/`。
 
-## 仓库内容
+## 运行探索
 
-| 路径 | 用途 |
+Gazebo 启动、起飞准备和开始探索是三个独立阶段。每轮运行使用独立的场景和规划器进程。
+
+### 1. 启动仿真
+
+终端一：
+
+```bash
+cd ~/fuel_gazebo_ws
+./tools/run.sh
+```
+
+脚本生成相机模型，启动办公室场景，让无人机起飞至约 `(0, 0, 1)` 悬停，再加载规划器。此时尚未开始探索。
+
+不需要 Gazebo 和 RViz 窗口时：
+
+```bash
+./tools/run.sh --gui false
+```
+
+可通过 `--seed N` 指定 Gazebo 随机种子。相同种子不保证轨迹完全相同。
+
+默认 ROS 和 Gazebo 端口分别为 `11421`、`11422`，启动前应结束占用这些端口的旧仿真。端口设置与运行日志位置见 [运行说明](docs/OPERATIONS.md)。
+
+### 2. 完成准备
+
+终端二进入仓库并加载环境：
+
+```bash
+cd ~/fuel_gazebo_ws
+source ./env.sh
+```
+
+等待传感器就绪、规划器进入 `WAIT_TRIGGER`，然后执行准备运动：
+
+```bash
+rosservice call /fuel_official/command_bridge/prepare "{}"
+rostopic echo /fuel_official/command_ready
+```
+
+`prepare` 执行初始化运动并等待实测位置稳定。服务返回 `success: True`，且 `command_ready` 显示 `true` 后，按 `Ctrl+C` 退出状态查看。
+
+### 3. 开始探索
+
+在终端二执行一次：
+
+```bash
+rosservice call /fuel_official/command_bridge/start "{}"
+```
+
+可查看规划器状态：
+
+```bash
+rostopic echo /fuel_official/planner/state
+```
+
+探索完成沿用 FUEL 的原 `FINISH` 条件：没有可覆盖的活动前沿。小前沿、休眠前沿和少量未观测区域可能仍然存在。
+
+### 4. 手动停止
+
+```bash
+rosservice call /fuel_official/command_bridge/stop "{}"
+```
+
+手动停止会进入目标保持，不算探索完成。随后在终端一按 `Ctrl+C` 关闭本轮进程。重新探索或出现 `HALTED` 后，应重新启动仿真和规划器。
+
+## 主要配置
+
+默认使用办公室场景配置，文件位于 [`regression_C_final.yaml`](src/fuel_gazebo_official_baseline/config/profiles/regression_C_final.yaml)。
+
+| 项目 | 默认值 |
+| --- | ---: |
+| 规划速度 / 加速度配置 | 0.6 m/s / 0.6 m/s² |
+| 地图分辨率 | 0.1 m |
+| 障碍膨胀 | 0.35 m |
+| 优化避障距离 | 0.7 m |
+| 执行前轨迹检查时长 | 2.1 s |
+| 轨迹检查距离余量 | 0.1 m |
+| 截停提前量 | 0.05 s |
+| 深度图分辨率 / 视场 | 640×480 / 80°×60° |
+| 地图最大射线距离 | 4.5 m |
+
+这些是针对当前仿真平台的适配配置。运动与避障优化含软约束，配置值不等于实际运动的硬上界；限期截停也不保证机体同时停住。完整字段、相机参数和各距离含义见 [参数说明](docs/PARAMETERS.md)。
+
+## 测试结果
+
+最近一批办公室场景独立运行结果如下：
+
+| 运行次数 | 自然完成 | 停滞 | 接触记录 |
+| ---: | ---: | ---: | ---: |
+| 5 | 4 | 1 | 0 |
+
+该配置能够完成办公室探索，但仍存在重新规划后停滞的情况，更早的同配置测试中也有碰撞记录。逐次耗时、实测航程和历史结果见 [测试结果](docs/VALIDATION.md)。
+
+当前版本的已知问题包括轨迹跟随误差、突然保持时的运动响应，以及轨迹检查中的未知区域状态判断。详细说明见 [已知限制](docs/KNOWN_LIMITATIONS.md)。当前结果集中在办公室和 Hummingbird 仿真条件，不代表其他场景或实体无人机的运行表现。
+
+## 文档
+
+| 文档 | 内容 |
 | --- | --- |
-| `fuel_gazebo_official_baseline/` | Gazebo 连接程序、配置、启动文件、官方源码补丁与固定源码压缩包 |
-| `fuel_gazebo_official_world/` | 从官方办公室点云转换的 Gazebo 场景和检查程序 |
-| `docs/OPERATIONS.md` | 使用、故障判断和备份恢复说明 |
-| `docs/VALIDATION.md` | 已验证结果与验证范围 |
-| `docs/GITHUB.md` | 创建私有仓库、保存修改和标记版本的方法 |
-| `tools/backup_fuel_success.sh` | 在 ROS 电脑上备份成功源码及配置 |
-| `tools/verify_repository.py` | 不依赖 ROS 的仓库文件检查 |
-| `validation/` | 不含原始截图和个人目录信息的结果摘要 |
+| [Gazebo 适配](docs/GAZEBO_ADAPTATION.md) | 接口、相机、数值修正及轨迹执行改动 |
+| [依赖说明](docs/DEPENDENCIES.md) | RotorS、mav_comm、NLopt 与构建依赖 |
+| [运行说明](docs/OPERATIONS.md) | 启动顺序、状态、端口及日志 |
+| [参数说明](docs/PARAMETERS.md) | 当前配置与实际观测参数 |
+| [测试结果](docs/VALIDATION.md) | 探索完成、停滞、接触及运行数据 |
+| [已知限制](docs/KNOWN_LIMITATIONS.md) | 当前问题与适用范围 |
 
-两个 ROS 包必须保持相邻，准备程序通过这一关系找到场景包。仓库本身不直接作为 Catkin 工作区编译。
+## 上游项目与许可
 
-官方 FUEL 源码固定于提交 `662dd23c7b52b258d3c4a0155ff6632118e8984f`。
-源码压缩包完整保留在 `fuel_gazebo_official_baseline/vendor/` 中，不依赖在线下载；原始文件记录与补丁支持核对修改来源。
+- [FUEL](https://github.com/HKUST-Aerial-Robotics/FUEL)：前沿探索、建图与轨迹规划。
+- [RotorS](https://github.com/ethz-asl/rotors_simulator)：飞行器动力学、模型与控制器。
+- [mav_comm](https://github.com/ethz-asl/mav_comm)：相关消息与接口。
 
-## 当前边界
+研究使用请引用原论文 [FUEL: Fast UAV Exploration Using Incremental Frontier Structure and Hierarchical Planning](https://doi.org/10.1109/LRA.2021.3051563)。
 
-- 使用 Gazebo 实际深度观测和测量位置，在线地图从观测逐步建立。
-- 保留官方探索区域选择、访问顺序和连续规划流程，另有明确记录的兼容修正及转向约束。
-- 相机位置、可视范围和办公室几何是本适配中的仿真设置，并非原 VI 相机或真实飞行实验。
-- 规划参数中的 0.6 是配置值，不能当作实测速度始终不超过 0.6 m/s 的证明。
-- RViz 空标记提示、转子重复坐标提示及启动先后顺序问题仍有记录，没有在本仓库整理中改动飞行代码。
-
-## 来源
-
-- [官方 FUEL](https://github.com/HKUST-Aerial-Robotics/FUEL)
-- [RotorS](https://github.com/ethz-asl/rotors_simulator)
-- [来源与文件版本](SOURCE_MANIFEST.md)
-
-保留官方 GNU GPL v3 许可证和各文件原有第三方声明，见 [LICENSE](LICENSE)。本仓库不把上游算法或资源声明为原创。
+本项目保留上游的 [GPL-3.0 许可证](LICENSE)及各组件的原始声明，详见 [第三方来源与许可](THIRD_PARTY_NOTICES.md)。

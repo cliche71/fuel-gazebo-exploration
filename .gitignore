@@ -1,28 +1,28 @@
-# Catkin output and local recovery data
-build/
-devel/
-install/
-logs/
-log/
-source_backups/
-fuel_gazebo_backups/
-fuel_official_ws/
-rotors_ws/
+/build/
+/devel/
+/install/
+/logs/
+/log/
+/reports/
+/archives/
+/frozen_programs/
+/.catkin_workspace
+__pycache__/
+*.py[cod]
 *.bag
 *.bag.active
 *.mp4
 *.mkv
-
-# Python / editors / credentials
-__pycache__/
-*.py[cod]
-.venv/
+*.npy
 .env
 .env.*
-!.env.example
+.venv/
 .idea/
 .vscode/
 *~
 
-# Preserve fixed upstream inputs. Do not ignore all archives or point clouds.
-!fuel_gazebo_official_baseline/vendor/FUEL-662dd23.tar.gz
+# Local maintenance records
+/CONSOLIDATION_RESULT.md
+/CLEANUP_MANIFEST.json
+/SOURCE_MAP.tsv
+/PUSH_COMMANDS.md

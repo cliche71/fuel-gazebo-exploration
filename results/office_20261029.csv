@@ -1,0 +1,4 @@
+run,seed,result,first_event_sim_s,observation_end_sim_s
+1,20261029,FINISH,240.48,241.00
+2,20261030,FINISH,262.20,262.74
+3,20261031,PHYSICAL_CONTACT,48.18,48.20

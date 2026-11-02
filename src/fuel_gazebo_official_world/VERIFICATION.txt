@@ -1,0 +1,5 @@
+Office world geometry is derived from the original FUEL office point cloud.
+Geometry coordinates and dimensions use metres. The planner constructs its
+online map from depth observations rather than loading the full world map.
+Project usage, configuration and simulation results are documented in README.md
+and docs/ at the repository root.

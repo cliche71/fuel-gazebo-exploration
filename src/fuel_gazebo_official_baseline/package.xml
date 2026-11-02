@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>fuel_gazebo_official_baseline</name>
+  <version>0.1.3</version>
+  <description>Separate official FUEL exploration baseline with measured Gazebo depth and RotorS control.</description>
+  <maintainer email="local@example.invalid">Local FUEL Gazebo integration</maintainer>
+  <license>GPL-3.0</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>rosgraph</exec_depend>
+  <exec_depend>rosgraph_msgs</exec_depend>
+  <exec_depend>rosnode</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>std_srvs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>trajectory_msgs</exec_depend>
+  <exec_depend>quadrotor_msgs</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>fuel_camera_adapter</exec_depend>
+  <exec_depend>rotors_gazebo</exec_depend>
+  <exec_depend>rotors_control</exec_depend>
+  <exec_depend>joint_state_publisher</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>fuel_gazebo_official_world</exec_depend>
+  <exec_depend>exploration_manager</exec_depend>
+  <exec_depend>plan_manage</exec_depend>
+  <exec_depend>rviz</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+</package>
