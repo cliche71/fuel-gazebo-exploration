@@ -113,11 +113,15 @@ rosservice call /fuel_official/command_bridge/stop "{}"
 
 ## 主要配置
 
-默认使用办公室场景配置，文件位于 [`regression_C_final.yaml`](src/fuel_gazebo_official_baseline/config/profiles/regression_C_final.yaml)。
+默认使用办公室场景的 [`rotors_1mps.yaml`](src/fuel_gazebo_official_baseline/config/profiles/rotors_1mps.yaml)。原 0.6 m/s、0.6 m/s² 配置保留为 [`regression_C_final.yaml`](src/fuel_gazebo_official_baseline/config/profiles/regression_C_final.yaml)，可通过以下命令选择：
+
+```bash
+./tools/run.sh --profile regression_C_final
+```
 
 | 项目 | 默认值 |
 | --- | ---: |
-| 规划速度 / 加速度配置 | 0.6 m/s / 0.6 m/s² |
+| 规划速度 / 加速度配置 | 1.0 m/s / 1.0 m/s² |
 | 地图分辨率 | 0.1 m |
 | 障碍膨胀 | 0.35 m |
 | 优化避障距离 | 0.7 m |
@@ -131,13 +135,13 @@ rosservice call /fuel_official/command_bridge/stop "{}"
 
 ## 测试结果
 
-最近一批办公室场景独立运行结果如下：
+2026-11-02 使用当前 1.0 m/s、1.0 m/s² 配置的五次办公室场景独立运行结果如下：
 
 | 运行次数 | 自然完成 | 停滞 | 接触记录 |
 | ---: | ---: | ---: | ---: |
-| 5 | 4 | 1 | 0 |
+| 5 | 4 | 0 | 1 |
 
-该配置能够完成办公室探索，但仍存在重新规划后停滞的情况，更早的同配置测试中也有碰撞记录。逐次耗时、实测航程和历史结果见 [测试结果](docs/VALIDATION.md)。
+四次自然完成分别耗时 173.22、194.65、205.13、192.09 仿真秒；另一轮在探索后 41.32 秒发生旋翼与墙面接触。旧 0.6 配置的五轮记录为四次完成、一次停滞，两套配置的结果分别保留。逐次耗时、实测航程和历史结果见 [测试结果](docs/VALIDATION.md)。
 
 当前版本的已知问题包括轨迹跟随误差、突然保持时的运动响应，以及轨迹检查中的未知区域状态判断。详细说明见 [已知限制](docs/KNOWN_LIMITATIONS.md)。当前结果集中在办公室和 Hummingbird 仿真条件，不代表其他场景或实体无人机的运行表现。
 

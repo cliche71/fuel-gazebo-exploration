@@ -1,13 +1,15 @@
 # 参数说明
 
-默认配置为 `src/fuel_gazebo_official_baseline/config/profiles/regression_C_final.yaml`。文件名沿用开发阶段命名，当前标准入口使用这一份配置。
+默认配置为 `src/fuel_gazebo_official_baseline/config/profiles/rotors_1mps.yaml`，规划速度和加速度分别为 1.0 m/s、1.0 m/s²。
+
+原 0.6 m/s、0.6 m/s² 配置保留在同目录的 `regression_C_final.yaml`，可通过 `./tools/run.sh --profile regression_C_final` 选择。两份配置仅下表中的五项速度、五项加速度不同，相机、地图、转向、控制和执行检查设置相同。这里的加速度不是飞行高度；初始化悬停高度仍为约 1 米。
 
 ## 规划与地图
 
 | 参数 | 当前值 | 含义 |
 | --- | ---: | --- |
-| `exploration/vm`、`manager/max_vel`、`search/max_vel`、`optimization/max_vel`、`bspline/limit_vel` | 各0.6 m/s | 探索、搜索、优化和样条使用的速度配置 |
-| `exploration/am`、`manager/max_acc`、`search/max_acc`、`optimization/max_acc`、`bspline/limit_acc` | 各0.6 m/s² | 对应环节的加速度配置 |
+| `exploration/vm`、`manager/max_vel`、`search/max_vel`、`optimization/max_vel`、`bspline/limit_vel` | 各1.0 m/s | 探索、搜索、优化和样条使用的速度配置 |
+| `exploration/am`、`manager/max_acc`、`search/max_acc`、`optimization/max_acc`、`bspline/limit_acc` | 各1.0 m/s² | 对应环节的加速度配置 |
 | `sdf_map/resolution` | 0.1 m | 地图分辨率 |
 | `sdf_map/obstacles_inflation` | 0.35 m | 占据栅格膨胀 |
 | `optimization/dist0` | 0.7 m | 轨迹优化的软距离目标 |
@@ -16,7 +18,7 @@
 | `astar/max_search_time` | 0.05 s | 观点连接搜索预算 |
 | 飞行路径 A* 对象 | 1.0 s | 实现中设置的实际飞行搜索预算 |
 
-速度、加速度和距离优化中的配置值不是对实测运动的硬保证。例如2026-11-01测试中，最高实测速度约1.259 m/s。完整结果见 [测试结果](VALIDATION.md)。
+速度、加速度和距离优化中的配置值不是对实测运动的硬保证。2026-11-02 的 1.0 配置五轮测试中，最高实测速度约为 1.521–1.632 m/s；旧 0.6 配置的上一批测试中，最高实测速度约为 1.259 m/s。完整结果见 [测试结果](VALIDATION.md)。
 
 配置中的 `regression/historical_Y`、`historical_T`、`historical_Q`、`historical_G` 均启用，分别对应连续转向修正、候选状态恢复、周期角差和时间梯度修正。保留这些内部参数名是为了与现有实现一致。
 

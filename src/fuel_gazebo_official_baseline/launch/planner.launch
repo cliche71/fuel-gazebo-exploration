@@ -1,6 +1,6 @@
 <launch>
-  <!-- Fixed tested B source; default C_final. See docs/PROVENANCE.md. -->
-  <arg name="profile" default="regression_C_final"/>
+  <!-- Office exploration profile; configuration details in docs/PARAMETERS.md. -->
+  <arg name="profile" default="rotors_1mps"/>
   <arg name="rviz" default="true"/>
   <arg name="odom_topic" default="/hummingbird/odometry_sensor1/odometry"/>
   <arg name="command_topic" default="/hummingbird/command/trajectory"/>

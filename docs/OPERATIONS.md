@@ -18,9 +18,18 @@ cd ~/fuel_gazebo_ws
 ```bash
 ./tools/run.sh --gui false
 ./tools/run.sh --seed 20261101
+./tools/run.sh --profile regression_C_final
 ```
 
 `--gui false` 关闭 Gazebo 和 RViz 窗口。`--seed` 设置 Gazebo 随机种子；相同种子不保证线程调度、地图更新和规划结果完全一致。
+
+默认配置为 `rotors_1mps`，速度 / 加速度配置为 1.0 m/s / 1.0 m/s²。`--profile regression_C_final` 选择保留的 0.6 m/s / 0.6 m/s² 配置；两者使用相同的相机、地图与执行检查设置。可组合这些选项：
+
+```bash
+./tools/run.sh --gui false --seed 20261101 --profile rotors_1mps
+```
+
+直接启动 `planner.launch` 时默认也为 `rotors_1mps`，可用 `profile:=regression_C_final` 选择旧配置。
 
 ## 准备与开始探索
 
